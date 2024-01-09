@@ -2,6 +2,7 @@ import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+import axios from "axios";
 
 const form = document.querySelector(".form")
 const gallery = document.querySelector(".gallery");
@@ -20,13 +21,15 @@ const getImages = (searchTerm) => {
     orientation: "horizontal",
     safesearch: true,
 })
-    return fetch(`${BASE_URL}?${searchParams}`)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Request is not ok");
-            }
-            return response.json()
-        }) 
+  axios.get(`${BASE_URL}?${searchParams}`)
+  	.then(response => {
+      console.log(response.data.hits);
+      return response.data.hits;
+	})
+	.catch(error => {
+		console.log(error);
+  })
+
 };
 
 form.addEventListener("submit", (event) => {
