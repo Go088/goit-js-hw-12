@@ -10,26 +10,26 @@ const loader = document.querySelector(".loader");
 
 loader.style.display = "none";
 
-const getImages = (searchTerm) => {
+let page = 1;
+
+const getImages = async (searchTerm) => {
     const BASE_URL = "https://pixabay.com/api/";
     const API_KEY = "41530032-c682b7302a1559a8b9f540776";
 
     const searchParams = new URLSearchParams({
-    key: API_KEY,
-    q: searchTerm,
-    image_type: "photo",
-    orientation: "horizontal",
-    safesearch: true,
-})
-  axios.get(`${BASE_URL}?${searchParams}`)
-  	.then(response => {
-      console.log(response.data.hits);
-      return response.data.hits;
-	})
-	.catch(error => {
-		console.log(error);
-  })
+      key: API_KEY,
+      q: searchTerm,
+      image_type: "photo",
+      orientation: "horizontal",
+      safesearch: true,
+      page: page,
+      per_page: 40,
+    })
+  const response = await axios.get(`${BASE_URL}?${searchParams}`);
 
+  console.log(response.data);
+
+  return response;
 };
 
 form.addEventListener("submit", (event) => {
@@ -52,7 +52,7 @@ form.addEventListener("submit", (event) => {
           messageColor: "#FFF"
 });
       }
-      gallery.innerHTML = createMarkup(response.hits);
+      gallery.innerHTML = createMarkup(response.data.hits);
       
       let galleryPage = new SimpleLightbox('.gallery a', {
         captions: true,
