@@ -12,11 +12,12 @@ loader.style.display = "none";
 
 let page = 1;
 
-const getImages = async (searchTerm) => {
-    const BASE_URL = "https://pixabay.com/api/";
-    const API_KEY = "41530032-c682b7302a1559a8b9f540776";
+async function getImages (searchTerm, page) {
+  const BASE_URL = "https://pixabay.com/api/";
+  const API_KEY = "41530032-c682b7302a1559a8b9f540776";
 
-    const searchParams = new URLSearchParams({
+  try {
+    const response = await axios.get(`${BASE_URL}`, {
       key: API_KEY,
       q: searchTerm,
       image_type: "photo",
@@ -24,12 +25,14 @@ const getImages = async (searchTerm) => {
       safesearch: true,
       page: page,
       per_page: 40,
-    })
-  const response = await axios.get(`${BASE_URL}?${searchParams}`);
+    });
 
-  console.log(response.data);
+    return response;
+    console.log(response);
 
-  return response;
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 form.addEventListener("submit", (event) => {
@@ -39,7 +42,7 @@ form.addEventListener("submit", (event) => {
 
   const inputValue = event.target.elements.search.value;
 
-  getImages(inputValue)
+  getImages(inputValue, page)
     .then(response => {
       loader.style.display = "none";
 
