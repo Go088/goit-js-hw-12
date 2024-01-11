@@ -89,6 +89,9 @@ form.addEventListener("submit", (event) => {
 loadButton.addEventListener("click", () => {
   try {
     page += 1;
+
+    loadButton.style.display = "none";
+    loader.style.display = "inline-block";
     
     const itemHeight = document.querySelector(".gallery-item").getBoundingClientRect().height;
 
@@ -107,6 +110,9 @@ loadButton.addEventListener("click", () => {
           })
         }
         galleryPage.refresh();
+
+        loadButton.style.display = "flex";
+        loader.style.display = "none";
       });
     
   } catch (error) {

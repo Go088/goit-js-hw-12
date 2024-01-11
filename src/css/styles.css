@@ -37,6 +37,7 @@ h2, p {
     justify-content: center;
     align-items: flex-start;
     gap: 16px;
+    margin-bottom: 12px;
 }
 .gallery-item {
     border: 1px solid #b2b6e0;
@@ -131,7 +132,8 @@ input {
     border: 3px solid #FFF;
     border-radius: 50%;
     display: inline-block;
-    position: relative;
+    position: absolute;
+    left: 48%;
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
 }
