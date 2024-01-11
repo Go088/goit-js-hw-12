@@ -95,6 +95,28 @@ button:hover {
     background: #6C8CFF;
 }
 
+.load-button {
+    display: flex;
+    padding: 8px;
+    margin: 16px auto;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    background-color: #4E75FF;
+    border: none;
+    width: 125px;
+    color: #fff;
+    font-family: Montserrat;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+}
+
+button:hover {
+    background: #6C8CFF;
+}
+
 input {
     width: 272px;
     height: 40px;

@@ -7,28 +7,32 @@ import axios from "axios";
 const form = document.querySelector(".form")
 const gallery = document.querySelector(".gallery");
 const loader = document.querySelector(".loader");
+const loadButton = document.querySelector(".load-button")
 
 loader.style.display = "none";
+loadButton.style.display = "none";
 
-let page = 1;
+const perPage = 40;
+let inputValue;
+let page;
+let galleryPage;
 
 async function getImages (searchTerm, page) {
   const BASE_URL = "https://pixabay.com/api/";
   const API_KEY = "41530032-c682b7302a1559a8b9f540776";
 
   try {
-    const response = await axios.get(`${BASE_URL}`, {
+    const response = await axios.get(`${BASE_URL}`, {params: {
       key: API_KEY,
       q: searchTerm,
       image_type: "photo",
       orientation: "horizontal",
       safesearch: true,
       page: page,
-      per_page: 40,
-    });
+      per_page: perPage,
+    }});
 
     return response;
-    console.log(response);
 
   } catch (error) {
     console.error(error);
@@ -38,15 +42,23 @@ async function getImages (searchTerm, page) {
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   gallery.innerHTML = "";
+ 
+  inputValue = event.target.elements.search.value;
+  if (inputValue.trim() === '') {
+    loadButton.style.display = "none";
+    return;
+   }
+
   loader.style.display = "inline-block";
 
-  const inputValue = event.target.elements.search.value;
+  page = 1;
 
   getImages(inputValue, page)
     .then(response => {
       loader.style.display = "none";
+      loadButton.style.display = "flex";
 
-      if (!response.hits.length) {
+      if (!response.data.hits.length) {
         iziToast.error({
           message: "Sorry, there are no images matching your search query. Please try again!",
           position: "topRight",
@@ -55,9 +67,10 @@ form.addEventListener("submit", (event) => {
           messageColor: "#FFF"
 });
       }
-      gallery.innerHTML = createMarkup(response.data.hits);
+
+      renderImage(response.data.hits);
       
-      let galleryPage = new SimpleLightbox('.gallery a', {
+      galleryPage = new SimpleLightbox('.gallery a', {
         captions: true,
         captionsData: 'alt',
         captionDelay: 250,
@@ -71,11 +84,38 @@ form.addEventListener("submit", (event) => {
       loader.style.display = "none";
       console.error("Error");
   })
-
 })
 
-const createMarkup = (hits) => {
-  return hits.reduce((html, { largeImageURL, webformatURL, tags, likes, views, comments, downloads }) => html + `
+loadButton.addEventListener("click", () => {
+  try {
+    page += 1;
+    
+    const itemHeight = document.querySelector(".gallery-item").getBoundingClientRect().height;
+
+    getImages(inputValue, page)
+      .then(response => {
+        renderImage(response.data.hits);
+
+        window.scrollBy(0, itemHeight * 2);
+
+        const totalPages = Math.ceil(response.data.totalHits / perPage);
+        
+        if (page === totalPages) {
+          loadButton.style.display = "none";
+          iziToast.show({
+            message: "We're sorry, but you've reached the end of search results."
+          })
+        }
+        galleryPage.refresh();
+      });
+    
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+function renderImage(hits) {
+  const markup = hits.reduce((html, { largeImageURL, webformatURL, tags, likes, views, comments, downloads }) => html + `
             <li class="gallery-item">
           <a class="gallery-link" href="${largeImageURL}">
             <img
@@ -104,4 +144,8 @@ const createMarkup = (hits) => {
             </div>
           </div>
         </li>`, "");
+  
+  gallery.insertAdjacentHTML("beforeend", markup);
 }
+  
+
