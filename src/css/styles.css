@@ -125,15 +125,19 @@ input {
     font-size: 16px;
     font-weight: 400;
 }
+.wrapper {
+    display: flex;
+    justify-content: center;
+}
 
 .loader {
     width: 48px;
     height: 48px;
-    border: 3px solid #FFF;
+    border: 3px solid #775e5e;
     border-radius: 50%;
     display: inline-block;
-    position: absolute;
-    left: 48%;
+    position: relative;
+    margin: 0 auto;
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
 }
