@@ -107,12 +107,16 @@ loadButton.addEventListener("click", () => {
           loadButton.style.display = "none";
           iziToast.show({
             message: "We're sorry, but you've reached the end of search results."
-          })
+          });
+          
+          loader.style.display = "none";
+          loadButton.style.display = "none";
+          return;
         }
         galleryPage.refresh();
 
-        loadButton.style.display = "flex";
         loader.style.display = "none";
+        loadButton.style.display = "flex";
       });
     
   } catch (error) {
