@@ -4,8 +4,8 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import axios from "axios";
 
-const form = document.querySelector(".form")
-const gallery = document.querySelector(".gallery");
+const searchForm = document.querySelector(".form")
+const imageGallery = document.querySelector(".gallery");
 const loader = document.querySelector(".loader");
 const loadButton = document.querySelector(".load-button")
 
@@ -39,9 +39,10 @@ async function getImages (searchTerm, page) {
   }
 };
 
-form.addEventListener("submit", (event) => {
+searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  gallery.innerHTML = "";
+  imageGallery.innerHTML = "";
+ 
  
   inputValue = event.target.elements.search.value;
   if (inputValue.trim() === '') {
@@ -50,6 +51,7 @@ form.addEventListener("submit", (event) => {
    }
 
   loader.style.display = "inline-block";
+  loadButton.style.display = "none";
 
   page = 1;
 
@@ -57,7 +59,7 @@ form.addEventListener("submit", (event) => {
     .then(response => {
       loader.style.display = "none";
       loadButton.style.display = "flex";
-
+      
       if (!response.data.hits.length) {
         iziToast.error({
           message: "Sorry, there are no images matching your search query. Please try again!",
@@ -65,10 +67,15 @@ form.addEventListener("submit", (event) => {
           messageSize: "11",
           backgroundColor: "#EF4040",
           messageColor: "#FFF"
-});
+        });
+        loadButton.style.display = "none";
       }
+      
+      else if (response.data.hits.length < perPage) {
+          loadButton.style.display = "none";
+        }
 
-      renderImage(response.data.hits);
+     renderImage(response.data.hits);
       
       galleryPage = new SimpleLightbox('.gallery a', {
         captions: true,
@@ -77,7 +84,7 @@ form.addEventListener("submit", (event) => {
       });
       galleryPage.refresh();
 
-      form.reset();
+      searchForm.reset();
     }
 )
     .catch((error) => {
@@ -155,7 +162,7 @@ function renderImage(hits) {
           </div>
         </li>`, "");
   
-  gallery.insertAdjacentHTML("beforeend", markup);
+  imageGallery.insertAdjacentHTML("beforeend", markup);
 }
   
 
