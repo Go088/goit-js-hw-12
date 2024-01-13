@@ -72,7 +72,12 @@ searchForm.addEventListener("submit", (event) => {
       }
       
       else if (response.data.hits.length < perPage) {
-          loadButton.style.display = "none";
+        loadButton.style.display = "none";
+        iziToast.show({
+            message: "We're sorry, but you've reached the end of search results.",
+            position: "topRight",
+          });
+        
         }
 
      renderImage(response.data.hits);
@@ -113,7 +118,8 @@ loadButton.addEventListener("click", () => {
         if (page === totalPages) {
           loadButton.style.display = "none";
           iziToast.show({
-            message: "We're sorry, but you've reached the end of search results."
+            message: "We're sorry, but you've reached the end of search results.",
+            position: "topRight",
           });
           
           loader.style.display = "none";
