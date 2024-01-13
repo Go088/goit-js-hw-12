@@ -14,7 +14,7 @@ loadButton.style.display = "none";
 
 const perPage = 40;
 let inputValue;
-let page;
+let page = 1;
 let galleryPage;
 
 async function getImages (searchTerm, page) {
