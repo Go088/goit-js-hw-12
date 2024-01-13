@@ -15,7 +15,11 @@ loadButton.style.display = "none";
 const perPage = 40;
 let inputValue;
 let page = 1;
-let galleryPage;
+const galleryPage = new SimpleLightbox('.gallery a', {
+      captions: true,
+      captionsData: 'alt',
+      captionDelay: 250,
+});
 
 async function getImages (searchTerm, page) {
   const BASE_URL = "https://pixabay.com/api/";
@@ -35,6 +39,10 @@ async function getImages (searchTerm, page) {
     return response;
 
   } catch (error) {
+      iziToast.error({
+        title: "Error",
+        message: "Sorry, request failed. Please try again later!",
+    });
     console.error(error);
   }
 };
@@ -42,7 +50,6 @@ async function getImages (searchTerm, page) {
 searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
   imageGallery.innerHTML = "";
- 
  
   inputValue = event.target.elements.search.value;
   if (inputValue.trim() === '') {
@@ -82,11 +89,7 @@ searchForm.addEventListener("submit", (event) => {
 
      renderImage(response.data.hits);
       
-      galleryPage = new SimpleLightbox('.gallery a', {
-        captions: true,
-        captionsData: 'alt',
-        captionDelay: 250,
-      });
+
       galleryPage.refresh();
 
       searchForm.reset();
@@ -145,7 +148,6 @@ function renderImage(hits) {
               class="gallery-image"
               src="${webformatURL}"
               alt="${tags}"
-              width="360"
             />
           </a>
           <div class="info">
