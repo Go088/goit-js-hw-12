@@ -89,7 +89,6 @@ searchForm.addEventListener("submit", (event) => {
 
      renderImage(response.data.hits);
       
-
       galleryPage.refresh();
 
       searchForm.reset();
@@ -172,5 +171,30 @@ function renderImage(hits) {
   
   imageGallery.insertAdjacentHTML("beforeend", markup);
 }
-  
+ 
+// ФУНКЦІЯ ЗАМИКАННЯ
 
+const createImagesRequest = (searchTerm) => {
+  let page = 1;
+  let isLastPage = false;
+  const perPage = 40;
+
+  return async () => {
+    try {
+      if (isLastPage) return;
+
+      const { hits, totalHits } = await getImages({ page, perPage, searchTerm });
+
+      if (page >= Math.ceil(totalHits / perPage)) {
+        isLastPage = true;
+      }
+      page += 1;
+      return hits;
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+}
+ 
+ 
